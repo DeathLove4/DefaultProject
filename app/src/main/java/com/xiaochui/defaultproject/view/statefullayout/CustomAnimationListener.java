@@ -1,0 +1,24 @@
+package com.xiaochui.defaultproject.view.statefullayout;
+
+import android.view.animation.Animation;
+
+/**
+ * simple class to reduce callback hell
+ */
+@SuppressWarnings("PMD.UncommentedEmptyMethodBody")
+public class CustomAnimationListener
+        implements Animation.AnimationListener {
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
+
+}

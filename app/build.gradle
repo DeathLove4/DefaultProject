@@ -1,0 +1,131 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion COMPILE_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION
+    defaultConfig {
+        applicationId "com.xiaochui.defaultProject"
+        minSdkVersion MIN_SDK_VERSION
+        targetSdkVersion TARGET_SDK_VERSION
+        versionCode java.lang.Integer.parseInt(VERSION_CODE)
+        versionName VERSION_NAME
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        ndk {
+//            abiFilters 'armeabi-v7a', 'x86'
+            abiFilters 'armeabi-v7a'
+        }
+
+        flavorDimensions VERSION_CODE
+    }
+
+    dexOptions {
+        preDexLibraries = false
+        javaMaxHeapSize "2g" // 2g should be also OK
+    }
+
+    signingConfigs {
+        signconfigs {
+            storeFile file('CzEdu.jks')
+            storePassword 'as4578'
+            keyAlias 'CzEdu'
+            keyPassword 'as4578'
+        }
+    }
+
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.signconfigs
+        }
+        release {
+            //shrinkResources true //自动去除没有使用的资源
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signconfigs
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        // 防止在发布的时候出现因MissingTranslation导致Build Failed!
+        disable 'MissingTranslation'
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+//                def fileName = outputFile.name.replace(".apk", "-${variant.productFlavors[0].name}_${defaultConfig.versionName}.apk")
+                def fileName = "xiaochui_${variant.productFlavors[0].name}_${defaultConfig.versionName}_L_125.apk"
+                outputFileName = fileName
+            }
+        }
+    }
+
+    productFlavors {
+        s_xiaochui {}
+        s_baidu {}
+        s_huawei {}
+        s_mi {}
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+        }
+    }
+
+    sourceSets.main {
+        jni.srcDirs = []
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:recyclerview-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:support-v4:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:cardview-v7:$SUPPORT_LIBRARY_VERSION"
+    implementation "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //multidex:分包
+    implementation 'com.android.support:multidex:1.0.1'
+
+    // retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    //okhttp
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    //butterknife
+    implementation 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    //rxbinding
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    //eventbus 数据传输
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    //refresh & load
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3-alpha-6'
+    implementation 'com.ashokvarma.android:bottom-navigation-bar:2.0.3'
+    implementation 'com.youth.banner:banner:1.4.10'
+    //图片处理
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'jp.wasabeef:glide-transformations:2.0.2'
+    //做题页上滑控件
+    implementation 'com.sothree.slidinguppanel:library:3.4.0'
+
+    //litepal
+    implementation 'org.litepal.android:core:1.5.1'
+    //倒计时
+    implementation 'com.github.iwgang:countdownview:2.1.2'
+}
